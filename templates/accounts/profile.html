@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile - Paws & Connect{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm text-center">
+            <div class="card-body py-5">
+                <div class="display-1 text-primary mb-3">
+                    <i class="bi bi-person-circle"></i>
+                </div>
+                <h4 class="card-title">{{ user.username }}</h4>
+                <p class="text-muted">{{ user.email }}</p>
+                {% if user.first_name or user.last_name %}
+                    <p>{{ user.first_name }} {{ user.last_name }}</p>
+                {% endif %}
+                <p class="text-muted small">Member since: {{ user.date_joined|date:"d M Y" }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Adoption Activity Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center mb-4">
+                    <div class="col">
+                        <div class="h2 text-primary">{{ requests_list|length }}</div>
+                        <div class="text-muted text-uppercase small fw-bold">Total Requests</div>
+                    </div>
+                    <div class="col border-start">
+                        {% set pending_count = 0 %}
+                        {% for req in requests_list %}
+                            {% if req.status == 'Pending' %}
+                                {% set pending_count = pending_count + 1 %}
+                            {% endif %}
+                        {% endfor %}
+                        <div class="h2 text-warning">{{ requests_list|selectattr("status", "equalto", "Pending")|list|length }}</div>
+                        <div class="text-muted text-uppercase small fw-bold">Pending</div>
+                    </div>
+                    <div class="col border-start">
+                        <div class="h2 text-success">{{ requests_list|selectattr("status", "equalto", "Approved")|list|length }}</div>
+                        <div class="text-muted text-uppercase small fw-bold">Approved</div>
+                    </div>
+                </div>
+                
+                <div class="d-grid mt-4">
+                    <a href="{% url 'my_requests' %}" class="btn btn-outline-primary">View Detailed Request History</a>
+                    <a href="{% url 'my_favorites' %}" class="btn btn-outline-danger mt-2">View My Favorites</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
